@@ -1,0 +1,615 @@
+<html>
+    <style>
+    * {
+  box-sizing: border-box;
+}
+
+/* Developed by Frank Tielemans */
+
+/* CSS playground here, via these variables you can adjust the accentcolor, the position and dimensions of the bubble and textsize en color of the buttontext */
+
+:root {
+/* Color of the background */
+  --bodycolor: #efefef;
+
+/* Width of the columsn */
+--boxwidth: 340px;
+/* Height of the rows */
+--boxheight: 520px;
+
+/* Width of the bubble (it's always a circle, width and height are the same) */
+ --icon-box-dimensions: 250px;
+  
+/* DON'T TOUCH THE VALUES OF THIS VARIABLE! */
+ --icon-box-dimensions-half: calc(var(--icon-box-dimensions) /2);
+  /*--------------------*/
+  
+/* How far from the top is the position of the bubble? */
+  --icon-offset: -10%;
+  
+/* Size of the font */
+  --content-fontsize: 1.1em;
+
+/* Define a accent color, make sure it's readable */
+  --accentcolor: maroon;
+  
+/* backgroundcolor and text color of the button, unhovered.
+/* Color in hovered state is the accent color */ */
+  --btntext-background : rgba(255,255,255,0.1);
+  --btntext-color : #eee;
+
+/* Adjust the title Y position */
+/*   --padding-title: ; */
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  padding: 0px;
+  background: var(--bodycolor);
+}
+
+
+/* grid-container */
+.container {
+  margin: 0 auto;
+  padding: 2%;
+  max-width: 100%;
+  height: auto;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--boxwidth), 1fr));
+  grid-auto-rows: minmax(var(--boxheight), 1fr);
+  grid-gap: 30px;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* this is the card selecter */
+.box {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #efefef;
+  transition: 0.5s;
+
+}
+
+.box:hover {
+  cursor: pointer;
+  	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+}
+
+.img-box {
+position: absolute;
+  object-fit: cover;
+  top: 0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  transition: 0.35s cubic-bezier(.15,.78,.46,.8);
+  z-index: 1;
+  
+}
+
+.img-box img {
+  object-fit: cover;
+  width: 100%; height: 100%;
+  transition: all .5s ease-in-out;
+}
+
+.img-box::after {
+/*   extract the title of the article */
+  content: attr(title);
+  
+  font-family:"Lato";
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  top: 111%;
+  z-index: 100;
+  text-align:center;
+  font-size: 1.05em;
+  font-weight: 700;
+  width:250%;
+opacity: 1;
+  border-radius: 50%;
+  height: 45.5%;
+  padding-top: 27px;
+/*     background: #fff radial-gradient(circle, rgba(0,0,0,0) , rgba(0,0,0,1) 300%); */
+  background: #efefef;
+  transition: 0.2s;
+  color: #666;
+  letter-spacing: -.6px;
+  box-shadow: inset 0px 0 3px 3px rgba(0,0,0,0.3)
+}
+
+.img-box::before {
+  position: absolute;
+  content: attr(data-author);
+  bottom: 2.5%;
+  font-weight: 400;
+  color: white;
+  z-index: 2001;
+  text-align: center;
+  width: 100%;
+  color:var(--accentcolor);
+    font-variant: small-caps;
+  text-transform: lowercase;
+  font-size: 0.8em;
+  opacity: 1;
+}
+
+.container .box:hover .img-box {
+
+  top: var(--icon-offset);
+  left: calc(50% - var(--icon-box-dimensions-half));
+  width: var(--icon-box-dimensions);
+  height: var(--icon-box-dimensions);
+
+
+}
+.container .box:hover .img-box:after, .container .box:hover .img-box:before
+{
+  opacity: 0;
+}
+
+
+
+.container .box:hover .img-box img {
+  
+  border: 2px solid white;
+    border-radius: 50%;
+  filter: saturate(70%) contrast(120%);
+}
+
+  .box:hover .content {
+  bottom: 0;
+    opacity: 1;
+         transform: scale(1);
+}   
+
+
+   .content {
+  position: absolute;
+  opacity:1;
+  bottom: -50%;
+  width: 100%;
+  height: 60%;
+  padding: 3em;
+  font-size: 0.8em;
+  text-align: center;
+  line-height: 1.4;
+  transition: bottom 0.35s cubic-bezier(.15,.78,.46,.8), transform 0.3s;
+  color: #000;
+  opacity: 0;
+  
+}
+
+.content h2 {
+  position: relative;
+  font-size: 1.4em;
+  font-weight: 700;
+}
+
+
+.content h3 {
+  font-size: 1em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  color: var(--accentcolor);
+  margin-bottom: 0.5em;
+  
+}
+
+.content p {
+  font-size: var(--content-fontsize);
+  font-weight: 100;
+  margin-bottom: 0.5em;
+  
+}  
+
+button.ghost-btn {
+  position: absolute;
+  z-index: 10;
+  margin-top: 1em;
+  text-align: center;
+  border: 0;
+  border-radius: 24px;
+ padding: 8px 38px;
+ background: var(--btntext-background);
+  color: var(--accentcolor);
+  border: 1px solid var(--accentcolor);
+  font-weight: 100;
+  transition: 1s;
+  font-size: 0.8em;
+  bottom:5%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  
+}
+
+button.ghost-btn:hover {
+  cursor: pointer;
+    background: var(--accentcolor);
+  color: var(--btntext-color);
+ 
+}
+
+@media screen and (min-width:600px) {
+  
+  :root {
+--boxheight: 520px;
+  }
+  
+}
+.topnav {
+                border-top-left-radius: 0px;
+                border-top-right-radius: 00px;
+                border-bottom-left-radius: 00px;
+                border-bottom-right-radius: 00px;
+                margin: 0px;
+              overflow: hidden;
+              background-color: #1f1f1f;
+              width:1520;
+            }
+            .topnav a {
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                margin: 10px;
+              float: left;
+              color: #f2f2f2;
+              text-align: center;
+              padding: 12px 15px;
+              text-decoration: none;
+              font-size: 15px;
+            }
+            
+            .q{
+                float: right;
+            }
+    </style>
+    <div class="topnav">
+            <a href="ab.html">Home</a>        
+          <a href="c4.html">Events</a>
+          <a href="contact.html">Contact Us</a>
+                <div class="q">
+                      <a  href="https://www.townscript.com/">Register</a>
+                    </div> 
+              </div>
+              </div>
+        <div class="container" style="background-color:#1f1f1f;">
+          <div class="box" style="background-color: black;">
+                  
+            <div class="img-box" title="The Whiz Kid" data-author="Quiz"
+                 ><img src="rgws.jpeg" alt=""></div>
+              
+              <div class="content">
+                <h2 style="font-size: 1.5em;color: orangered;">The Whiz Kid</h2>
+                <h3 style="font-size: 1em;color: turquoise;">Quiz</h3>
+                <p style="font-size: 1em;color: white;font-family: cursive;">Whiz Kids as the name suggests Is an event designed to test not only the intelligence and the knowledge of the
+                  ‘kids’ participating in the event but also the sensory, visual and memory skills.
+                  <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="whiz kid.html">Rules</button></a></div>
+            
+            </div>
+            <div class="box" style="background-color: black;">
+                  
+              <div class="img-box" title="Listen To Me" data-author="Debate"
+                   ><img src="ewwew.jpg" alt=""></div>
+                
+                <div class="content">
+                  <h2 style="font-size: 1.5em;color: orangered;">Listen To Me</h2>
+                  <h3 style="font-size: 1em;color: turquoise;">Debate</h3>
+                  <p style="font-size: 1em;color: white;font-family: cursive;">Listen to Me, the movie revolves around a group of students who are part of the debate team, embarking on a
+                    journey of triumph. Loosely based on this premise is the event ‘Listen to Me’ where each team has to showcase
+                    their debating/ public speaking skills, teamwork, vocabulary, imagination and spontaneity.
+                    <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="listen to me.html">Rules</button></a></div>
+              
+              </div>
+              <div class="box" style="background-color: black;">
+                  
+                <div class="img-box" title="Shadow of A Doubt" data-author="Crime investigation"
+                     ><img src="shadow of a doubt.jpg" alt=""></div>
+                  
+                  <div class="content">
+                    <h2 style="font-size: 1.5em;color: orangered;">Shadow Of A Doubt</h2>
+                    <h3 style="font-size: 1em;color: turquoise;">Crime investigation</h3>
+                    <p style="font-size: 1em;color: white;font-family: cursive;">Shadow of a Doubt is a murder mystery. This event provides a cinematic experience of investigating and solving
+                      a murder case and also it tests the competitor's observation, reasoning, sense of surrounding, investigative skills
+                      among others.
+                      <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="shadow.html">Rules</button></a></div>
+                
+                </div>
+                <div class="box" style="background-color: black;">
+                  
+                  <div class="img-box" title="The Insider" data-author="Best Manager"
+                       ><img src="C:\Users\varun\Downloads\moot court the ss.jpg" alt=""></div>
+                    
+                    <div class="content">
+                      <h2 style="font-size: 1.5em;color: orangered;">The Insider</h2>
+                      <h3 style="font-size: 1em;color: turquoise;">Best Manager</h3>
+                      <p style="font-size: 1em;color: white;font-family: cursive;">The aim of this event is to identify the student with the traits of a good manager. It also aims to find out how they
+                        demonstrate the skills, Knowledge and talents of a good manager. It further tests them on how they use strate-
+                        gies to solve the problems.
+                        <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="insider.html">Rules</button></a></div>
+                  
+                  </div>
+                  <div class="box" style="background-color: black;">
+                  
+                    <div class="img-box" title="Pursuit Of Happiness" data-author="Human Resource management"
+                         ><img src="moot court the suitss.jpg" alt=""></div>
+                      
+                      <div class="content">
+                        <h2 style="font-size: 1.5em;color: orangered;">Pursuit Of Happiness</h2>
+                        <h3 style="font-size: 1em;color: turquoise;">Human Resource management</h3>
+                        <p style="font-size: 1em;color: white;font-family: cursive;">The event takes you through the fun filled ride where the participants gets to show off their H.R concepts, apply-
+                          ing them through a medium of knowledge and skill. If you have the H.R spirit we promise to make this event
+                          next level experience for you.
+                          <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="persuit of happiness.html">Rules</button></a></div>
+                    
+                    </div>
+                     <div class="box" style="background-color: black;">
+                  
+                  <div class="img-box" title="Betting On Zero" data-author="Marketing"
+                       ><img src="C:\Users\varun\Downloads\wweew.jpg" alt=""></div>
+                    
+                    <div class="content">
+                      <h2 style="font-size: 1.5em;color: orangered;">Betting On Zero</h2>
+                      <h3 style="font-size: 1em;color: turquoise;">Marketing</h3>
+                      <p style="font-size: 1em;color: white;font-family: cursive;">Products are made in the factory, but brands are created in the mind" The event puts your marketing knowl-
+                        edge into the test creating room for Innovation and creativity. Take no break, Bring out your bidding skills and
+                        see how good you are. It's important to remember your competitor is a Mouse click away. Sell a fridge to an
+                        Eskimo and a sweater to a Camel, your job is done!
+                        </p><button class="ghost-btn" style="font-size: 1em;"><a href="betting.html">Rules</button></a></div>
+                  
+                  </div>
+                  <div class="box" style="background-color: black;">
+                  
+                    <div class="img-box" title="The Wolf Of Wall Street" data-author="Finance"
+                         ><img src="logo f.jpg" alt=""></div>
+                      
+                      <div class="content">
+                        <h2 style="font-size: 1.5em;color: orangered;">The Wolf Of Wall Street</h2>
+                        <h3 style="font-size: 1em;color: turquoise;">Finance</h3>
+                        <p style="font-size: 1em;color: white;font-family: cursive;">It is a floor trading event of money. It gives participants an opportunity to test their ability to interpret the real
+                          world situation on money management and how they impact the company's position and above all it gives the
+                          participants an experience which will be incredible. No event could be crazier than this. Where students come
+                          together and show their skills on money handling and investing.
+                          <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="wall street.html">Rules</button></a></div>
+                    
+                    </div>
+                    <div class="box" style="background-color: black;">
+                  
+                      <div class="img-box" title="Billions" data-author="Entreprenuership"
+                           ><img src="C:\Users\varun\Downloads\logogsd.jpg" alt=""></div>
+                        
+                        <div class="content">
+                          <h2 style="font-size: 1.5em;color: orangered;">Billions</h2>
+                          <h3 style="font-size: 1em;color: turquoise;">Entreprenuership</h3>
+                          <p style="font-size: 1em;color: white;font-family: cursive;">Don't let others convince you that the idea is bad when your gut tells you it is good. This event is conceptualized
+                            with a vision of providing budding entrepreneurs with the platform to showcase their business ideas.
+                            </p><button class="ghost-btn" style="font-size: 1em;"><a href="billions.html">Rules</button></a></div>
+                      
+                      </div>
+                      <div class="box" style="background-color: black;">
+                  
+                        <div class="img-box" title="The Suits" data-author="Moot Court"
+                             ><img src="C:\Users\varun\Downloads\moot court the suits.jpg" alt=""></div>
+                          
+                          <div class="content">
+                            <h2 style="font-size: 1.5em;color: orangered;">The Suits</h2>
+                            <h3 style="font-size: 1em;color: turquoise;">Moot Court</h3>
+                            <p style="font-size: 1em;color: white;font-family: cursive;">Moot court or mock trials are usually based on hypothetical cases involving emerging or unsettled areas of law.
+                              Justice delayed is justice denied.
+                              <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="the suits.html">Rules</button></a></div>
+                        
+                        </div>
+                        <div class="box" style="background-color: black;">
+                  
+                          <div class="img-box" title="The Invisible Sign" data-author=""
+                               ><img src="C:\Users\varun\Downloads\UN.jpg" alt=""></div>
+                            
+                            <div class="content">
+                              <h2 style="font-size: 1.5em;color: orangered;">The Invisible Sign</h2>
+                              <h3></h3>
+                              <p style="font-size: 1em;color: white;font-family: cursive;">Without mathematics, there is nothing you can do. Everything around you is mathematics. Everything around
+                                you is number. Reasoning and aptitude skills are required. Participants need to have basic theoritical and graph-
+                                ical math knowledge.
+                                <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="invisible sign.html">Rules</button></a></div>
+                          
+                          </div>
+                          
+                       <div class="box" style="background-color: black;">
+                  
+                        <div class="img-box" title="Gravity" data-author=""
+                             ><img src="POM.jpg" alt=""></div>
+                          
+                          <div class="content">
+                            <h2 style="font-size: 1.5em;color: orangered;">Gravity</h2>
+                            <h3></h3>
+                            <p style="font-size: 1em;color: white;font-family: cursive;">Physics is really nothing more than a search for ultimate simplicity, but so far all we have is a kind of elegant
+                              messiness .You can enter the circuit board when you are connected with wires of basic knowledge of physics
+                              and electronics.
+                              <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="gravity.html">Rules</button></a></div>
+                        
+                        </div>
+                        <div class="box" style="background-color: black;">
+                  
+                          <div class="img-box" title="Gattaca" data-author=""
+                               ><img src="C:\Users\varun\Downloads\gattaca.png" alt=""></div>
+                            
+                            <div class="content">
+                              <h2 style="font-size: 1.5em;color: orangered;">Gattaca</h2>
+                              <h3></h3>
+                              <p style="font-size: 1em;color: white;font-family: cursive;">The arrangement of nucleotides influences the level of the event to drive you beyond the knowledge of books.
+                                Testing your knowledge in levels of fun with exciting activities in the field of biology never fails to keep you mes-
+                                merized.
+                                </p><button class="ghost-btn" style="font-size: 1em;"><a href="gataca.html">Rules</button></a></div>
+                          
+                          </div>
+                          <div class="box" style="background-color: black;">
+                  
+                            <div class="img-box" title="Primer" data-author=""
+                                 ><img src="C:\Users\varun\Downloads\primer1.jpg" alt=""></div>
+                              
+                              <div class="content">
+                                <h2 style="font-size: 1.5em;color: orangered;">Primer</h2>
+                                <h3></h3>
+                                <p style="font-size: 1em;color: white;font-family: cursive;">For every accidental discovery there is a new beginning which leads to the torch bearer towards a spark of a new
+                                  primer. The main theme of the event is to portray scientific discovery in a down to earth and realistic manner.
+                                  Exhibiting beyond talents in the field of science through models depicting modern science and technology of
+                                  biological sciences and physical sciences to create scientific environment
+                                  </p><button class="ghost-btn" style="font-size: 1em;"><a href="primer.html">Rules</button></a></div>
+                            
+                            </div>
+            
+                <div class="box" style="background-color: black;">
+                  
+                  <div class="img-box"  title="Anti-Thrust" data-author="Competative Programming"
+                       ><img src="C:\Users\varun\Downloads\anti1.jpg" alt=""></div>
+                    
+                    <div class="content">
+                      <h2 style="font-size: 1.5em;color: orangered;">Anti-Thrust</h2>
+                      <h3 style="font-size: 1em;color: turquoise;">Competative Programming</h3>
+                      <p style="font-size: 1em;color: white;font-family: cursive;">The event gives you an amazing coding experience. Where the participants need to implement their ideas and
+                        come up with optimal solution for logical problems given. It also has a surprise round which you would be
+                        thrilled to be part of.
+                        </p>
+                        <button class="ghost-btn" style="font-size: 1em;"><a href="anti.html">Rules</button></a>
+               
+                  </div>
+                </div>
+                  
+                  <div class="box" style="background-color: black;">
+                  
+                    <div class="img-box" title="The Wall" data-author="Box Cricket"
+                         ><img src="wall.jpg" alt=""></div>
+                      
+                      <div class="content">
+                        <h2 style="font-size: 1.5em;color: orangered;">The Wall</h2>
+                        <h3 style="font-size: 1em;color: turquoise;">Box Cricket</h3>
+                        <p style="font-size: 1em;color: white;font-family: cursive;">The wall is a box cricket tournament. A true gentleman has walked out of the gentleman’s game. Test cricket will
+                          never be same now. A huge lacun has been created. How can anyone imagine an Indian test side without that
+                          number 3 spot ? Right from his debut at Lords he has been a true servant of Indian cricket. ‘THE WALL’ is a
+                          tribute to the cricketing legend RAHUL DRAVID to continue rejoicing the legacy he has left behind for billions.
+                          <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="cricket.html">Rules</button></a></div>
+                    
+                    </div>
+                    <div class="box" style="background-color: black;">
+                  
+                      <div class="img-box" title="Goal" data-author="Football"
+                           ><img src="goal.jpg" alt=""></div>
+                        
+                        <div class="content">
+                          <h2 style="font-size: 1.5em;color: orangered;">Goal</h2>
+                          <h3 style="font-size: 1em;color: turquoise;">Football</h3>
+                          <p style="font-size: 1em;color: white;font-family: cursive;">The Goal is a tribute to our ‘Capitan Fantastic’ Indian Football legend SUNIL CHHETRI. Football is a highly com-
+                            petitive sport, here is a chance to strike into the opponent's area with a goal and then blocking him when he
+                            gets here. Some people try to find things in this game that doesn't exist but football only two things - BLOCKING
+                            & TACKLING.
+                            <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="football.html">Rules</button></a></div>
+                      
+                      </div>
+                      <div class="box" style="background-color: black;">
+                  
+                        <div class="img-box" title="Lagori" data-author="Fun Game"
+                             ><img src="rgwsds.jpg" alt=""></div>
+                          
+                          <div class="content">
+                            <h2 style="font-size: 1.5em;color: orangered;">Lagori</h2>
+                            <h3 style="font-size: 1em;color: turquoise;">Fun Game</h3>
+                            <p style="font-size: 1em;color: white;font-family: cursive;">The game involves 2 teams with a ball and flat stones/wooden blocks. One team will Knock down the blocks
+                              while the other team will try to throw the ball at the opposite team.
+                              <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="LAGORI.html">Rules</button></a></div>
+                        
+                        </div>
+                        <div class="box" style="background-color: black;">
+                  
+                          <div class="img-box" title="National Treasure" data-author="Treasure Hunt"
+                               ><img src="logogfd.jpg" alt=""></div>
+                            
+                            <div class="content">
+                              <h2 style="font-size: 1.5em;color: orangered;">National Treasure</h2>
+                              <h3 style="font-size: 1em;color: turquoise;">Treasure Hunt</h3>
+                              <p style="font-size: 1em;color: white;font-family: cursive;">Mysuru's biggest treasure hunt Is here to surprise you all. National Treasure is a hunt in which a team consist of
+                                3 members set out in search of a treasure with the help of clues that are scattered all over the city. The teams are
+                                going to be visiting every hotspot of mysuru in search of these clues. Co-ordination gets the key to the treasure
+                                chest.
+                                <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="tresure hunt.html">Rules</button></a></div>
+                          
+                          </div>
+                                      
+                          <div class="box" style="background-color: black;">
+                  
+                            <div class="img-box" title="Hustle and Flow" data-author="Rap Battle"
+                                 ><img src="dfg.jpeg" alt=""></div>
+                              
+                              <div class="content">
+                                <h2 style="font-size: 1.5em;color: orangered;">Hustle and Flow</h2>
+                                <h3 style="font-size: 1em;color: turquoise;">Rap Battle</h3>
+                                <p style="font-size: 1em;color: white;font-family: cursive;">e "Music is nothing else but wild sounds civilized into time and tune" Music , a form of entertainment that puts
+                                  sounds together in a way that people like, find interesting or dance to.
+                                  e Attention rappers! Here is a rap battle for you that you totally cannot miss. From battling using existing raps
+                                  to creating their very own rap, let's see if you have what it takes to make it huge! Trust us, because yeh toh bohot
+                                  hard hai!!
+                                  <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="rap.html">Rules</button></a></div>
+                            
+                            </div>
+
+                    <div class="box" style="background-color: black;">
+                  
+                  <div class="img-box" title="Project Catwalk" data-author="Fashion Show"
+                       ><img src="C:\Users\varun\Downloads\catwalk.jpeg" alt=""></div>
+                    
+                    <div class="content">
+                      <h2 style="font-size: 1.5em;color: orangered;">Project Catwalk</h2>
+                      <h3 style="font-size: 1em;color: turquoise;">Fashion Show</h3>
+                      <p style="font-size: 1em;color: white;font-family: cursive;">It is honestly wild that many Movies and TV series graced screens since years. And many of us have been capti-
+                        vated by their fashion. As each characters have their signature style which is worth keeping an eye out for. So
+                        PROJECT CATWALK Is here to disclose the iconic vogue on the runway.
+                        </p><button class="ghost-btn" style="font-size: 1em;"><a href="fashion.html">Rules</button></a></div>
+                  
+                  </div>
+                
+                    <div class="box" style="background-color: black;">
+                  
+                  <div class="img-box" title="Stomp The Yard" data-author="Group Dance"
+                       ><img src="C:\Users\varun\Downloads\dance logo 1.jpg" alt=""></div>
+                    
+                    <div class="content">
+                      <h2 style="font-size: 1.5em;color: orangered;">Stomp The Yard</h2>
+                      <h3 style="font-size: 1em;color: turquoise;">Group Dance</h3>
+                      <p style="font-size: 1em;color: white;font-family: cursive;">Stomp the yard - an event that gets you on your feet and moving. This one is for all of those teams out there who
+                        are ready to light the stage on fire. Gear up and don't forget to register for the event bringing your best foot
+                        forward and your best dancers.
+                        </p><button class="ghost-btn" style="font-size: 1em;"><a href="dance.html">Rules</button></a></div>
+                  
+                  </div>
+                        
+                                                        <div class="box" style="background-color: black;">
+                  
+                                                                <div class="img-box" title="Shutter" data-author="Photography"
+                                                                     ><img src="rgws.jpg" alt=""></div>
+                                                                  
+                                                                  <div class="content">
+                                                                    <h2 style="font-size: 1.5em;color: orangered;">Shutter</h2>
+                                                                    <h3 style="font-size: 1em;color: turquoise;">Photography</h3>
+                                                                    <p style="font-size: 1em;color: white;font-family: cursive;">Shutter is a photography event with skills and equipment to capture emotions, reactions and memories in
+                                                                      high-pressure environment. They need to think on their feet to respond to changes in lighting, checking their
+                                                                      exposure, colour, temperature and when harsh sunlight comes into play, they also need to Know how to balance
+                                                                      sunlight with on-camera flash.
+                                                                      <lorme7></lorme7></p><button class="ghost-btn" style="font-size: 1em;"><a href="shutter.html">Rules</button></a></div>
+                                                                
+                                                                </div>
+                
+                                                        
+                                                        
+                                                                                                                                                                                            
+              </div>
+</html>
